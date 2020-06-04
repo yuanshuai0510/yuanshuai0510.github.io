@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ysocks.gitee.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在第二章中，我们通过学习lambda表达式，了解了如何能够在不创建额外类的情况下传递行为来帮助我们编写出简洁精练的代码。lambda表达式是一种通过使用函数式接口让开发者能够快速表达他们的想法的语言概念。设计API的时候将lambda，也就是那些使用了函数式接口的流畅的API（我们在lambdas章节中讨论过它们）记在脑子中，我们才能真正体验到lambda的强大。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8-Stream API">
+<meta property="og:url" content="http://ysocks.gitee.io/2020/04/15/Stream-API/index.html">
+<meta property="og:site_name" content="YSocket&#39;s Blog">
+<meta property="og:description" content="在第二章中，我们通过学习lambda表达式，了解了如何能够在不创建额外类的情况下传递行为来帮助我们编写出简洁精练的代码。lambda表达式是一种通过使用函数式接口让开发者能够快速表达他们的想法的语言概念。设计API的时候将lambda，也就是那些使用了函数式接口的流畅的API（我们在lambdas章节中讨论过它们）记在脑子中，我们才能真正体验到lambda的强大。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://whyjava.files.wordpress.com/2015/10/collection_vs_stream.png">
+<meta property="og:image" content="https://whyjava.files.wordpress.com/2015/07/stream-api.png">
+<meta property="article:published_time" content="2020-04-15T05:29:00.000Z">
+<meta property="article:modified_time" content="2020-06-04T03:48:33.680Z">
+<meta property="article:author" content="YSocket">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://whyjava.files.wordpress.com/2015/10/collection_vs_stream.png">
+
+<link rel="canonical" href="http://ysocks.gitee.io/2020/04/15/Stream-API/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java8-Stream API | YSocket's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="YSocket's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">YSocket's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">YSocket Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/04/15/Stream-API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YSocket">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YSocket's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8-Stream API
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-15 13:29:00" itemprop="dateCreated datePublished" datetime="2020-04-15T13:29:00+08:00">2020-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-04 11:48:33" itemprop="dateModified" datetime="2020-06-04T11:48:33+08:00">2020-06-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在<a href="./2020/04/15/java8-lambda/">第二章</a>中，我们通过学习lambda表达式，了解了如何能够在不创建额外类的情况下传递行为来帮助我们编写出简洁精练的代码。lambda表达式是一种通过使用函数式接口让开发者能够快速表达他们的想法的语言概念。设计API的时候将lambda，也就是那些使用了函数式接口的流畅的API（我们在<a href="./02-lambdas.md#lambda表达式是如何在Java8中工作的">lambdas章节</a>中讨论过它们）记在脑子中，我们才能真正体验到lambda的强大。  </p>
+<a id="more"></a>
+<p>在Java8中引进的Stream API是使用lambda的API之一。就像SQL如何帮助你在数据库中形象地查询数据，Stream在Java集合计算上提供了一个形象的声明式的高层抽象来表示计算。形象的意思是指开发者只要写他们想写的，而不是关注他们该如何来写。在这一章中，我们将讨论对一个新的数据处理API的需求、<code>Collection</code>和<code>Stream</code>的区别，和如何在你的应用中使用Stream API。</p>
+<blockquote>
+<p>这一节的代码在<a href="https://github.com/shekhargulati/java8-the-missing-tutorial/tree/master/code/src/main/java/com/shekhargulati/java8_tutorial/ch03" target="_blank" rel="noopener">ch03</a>包中</p>
+</blockquote>
+<h2 id="为什么我们需要一个新的数据处理抽象"><a href="#为什么我们需要一个新的数据处理抽象" class="headerlink" title="为什么我们需要一个新的数据处理抽象"></a>为什么我们需要一个新的数据处理抽象</h2><p>在我的观点中，主要有两个原因：</p>
+<ol>
+<li><code>Collection</code> API没有提供高层的概念来查询数据，所以开发者被迫为琐碎的工作编写很多重复的代码。</li>
+<li>对<code>Collection</code>的并行操作在语言支持方面受到了限制。只能让开发者用Java的并发机制来让数据并行处理快速而有效。</li>
+</ol>
+<h2 id="在Java8之前的数据处理"><a href="#在Java8之前的数据处理" class="headerlink" title="在Java8之前的数据处理"></a>在Java8之前的数据处理</h2><p>看下面的代码并试图说出它的作用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Example1_Java7</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Task&gt; tasks = getTasks();</span><br><span class="line"></span><br><span class="line">        List&lt;Task&gt; readingTasks = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Task task : tasks) &#123;</span><br><span class="line">            <span class="keyword">if</span> (task.getType() == TaskType.READING) &#123;</span><br><span class="line">                readingTasks.add(task);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Collections.sort(readingTasks, <span class="keyword">new</span> Comparator&lt;Task&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Task t1, Task t2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> t1.getTitle().length() - t2.getTitle().length();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">for</span> (Task readingTask : readingTasks) &#123;</span><br><span class="line">            System.out.println(readingTask.getTitle());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码将阅读任务按照它们标题的长度进行排序后输出。Java7的开发者成天要写这类的代码。为了写一个这样简单的程序，我们编写了15行代码。上面提到的代码的最大问题不是开发者要编写的代码的数量，而是它丢失了开发者的意图，也就是过滤阅读任务，根据标题长度排序，和转换成字符串列表。</p>
+<h2 id="Java8中的数据处理"><a href="#Java8中的数据处理" class="headerlink" title="Java8中的数据处理"></a>Java8中的数据处理</h2><p>如下所示，上述的代码可以通过Java8的<code>Stream</code> API简化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Example1_Stream</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Task&gt; tasks = getTasks();</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; readingTasks = tasks.stream()</span><br><span class="line">                .filter(task -&gt; task.getType() == TaskType.READING)</span><br><span class="line">                .sorted((t1, t2) -&gt; t1.getTitle().length() - t2.getTitle().length())</span><br><span class="line">                .map(Task::getTitle)</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        readingTasks.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码构建了一个由许多流式操作组成的管道流，下面对其一一讲解。</p>
+<ul>
+<li><strong>stream()</strong>: 通过在一个原始的集合上调用<code>stream</code>方法来创建一个流式管道流，而<code>tasks</code>就是<code>List&lt;Task&gt;</code>类型的。</li>
+<li><strong>filter(Predicate<T>)</strong>: 这个操作从流中抽取符合断言的判定条件的元素。一旦你有了一个数据流，你可以在其上不调用或者多次调用中间操作。lambda表达式<code>task -&gt; task.getType() == TaskType.READING</code>定义了一个断言来过滤所有的阅读任务。该lambda表达式的类型为<code>java.util.function.Predicate&lt;Task&gt;</code>。</li>
+<li><strong>sorted(Comparator<T>)</strong>:这个操作返回一个根据由lambda表达式定义的比较器进行排序后的元素组成的数据流。在上面的例子中，这个比较器是<code>(t1, t2) -&gt; t1.getTitle().length() - t2.getTitle().length()</code> 。</li>
+<li><strong>map(Function&lt;T,R&gt;)</strong>: 这个操作对数据流中的元素都进行<code>Fuction&lt;T,R&gt;</code>的操作，并返回新的数据流。</li>
+<li><strong>collect(toList())</strong>:这个操作将经过各种操作处理后的数据流中的元素收集到一个列表中。</li>
+</ul>
+<h3 id="为什么Java8编写的代码更好"><a href="#为什么Java8编写的代码更好" class="headerlink" title="为什么Java8编写的代码更好"></a>为什么Java8编写的代码更好</h3><p>我认为Java8的代码更好的理由如下：</p>
+<ol>
+<li>Java8的代码清晰地展现出开发者的意图，如过滤、排序等。</li>
+<li>开发者通过Stream API的形式能够在一个高层的抽象上来表现出他们想要做什么，而不是他们如何来作。</li>
+<li>Stream API为数据处理提供了一个统一的语言。现在当程序员讨论到数据处理时，它们将会有共同的词汇。当两个开发者谈论到<code>filter</code>方法时，你可以肯定他们都在使用一个数据过滤操作。</li>
+<li>处理数据时不需要重复的代码。用户不需要写专门的<code>for</code>循环，也不用创建临时集合来存储数据。所有的工作都可以通过Stream API来完成。</li>
+<li>Stream不会修改你原来的集合——它们是免于变化的。</li>
+</ol>
+<h2 id="什么是Stream？"><a href="#什么是Stream？" class="headerlink" title="什么是Stream？"></a>什么是Stream？</h2><p>Stream是一些数据上的抽象视图。举例来说，Stream可以是列表、文件中的每行数据，或者其他任意元素的序列的一个视图。Stream API提供了可以连续执行，或者并行执行的操作集合。<strong><em>开发者需要记住的是Stream是一个高层的抽象，而不是一个数据结构。Stream不会存储你的数据。</em></strong> Stream本身是<strong>懒惰</strong>的，只有使用到它们时才会开始计算。这使我们能够产生无数的数据流。在Java8中，你能够像下面一样编写一个Stream来产生无数的唯一标识码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    Stream&lt;String&gt; uuidStream &#x3D; Stream.generate(() -&gt; UUID.randomUUID().toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Stream的接口中，有很多像<code>of</code>、<code>generate</code>和<code>iterate</code>一样的静态工厂方法，它们可以用来创建Stream的实例。上面展示的<code>generate</code>方法以<code>Supplier</code>为参数。<code>Supplier</code>是一个函数式接口，用来描述一个不需要参数并返回一个值的函数。我们传递给<code>generate</code>方法一个供应者，那么当调用的时候，就能产生一个唯一标识码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Supplier&lt;String&gt; uuids = () -&gt; UUID.randomUUID().toString()</span><br></pre></td></tr></table></figure>
+
+<p>如果我们运行上面的代码，那么什么都不会发生，因为Stream是懒惰的，它没有被使用之前，什么计算都不会进行。如果我们将代码更新成下面这样，我们将会看到在控制台上输出UUID。该程序将会不断运行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Stream&lt;String&gt; uuidStream = Stream.generate(() -&gt; UUID.randomUUID().toString());</span><br><span class="line">    uuidStream.forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Java8允许你在集合对象上调用<code>stream</code>方法来创建一个Stream。Stream支持数据处理操作，所以开发者可以用高层数据处理结构来表示计算过程。</p>
+<h2 id="Collection-vs-Stream"><a href="#Collection-vs-Stream" class="headerlink" title="Collection vs Stream"></a>Collection vs Stream</h2><p>下面的表格解释了Collection和Stream之间的不同。</p>
+<p><img src="https://whyjava.files.wordpress.com/2015/10/collection_vs_stream.png" alt="Collection vs Stream"></p>
+<p>让我们来详细讨论一下外部迭代和内部迭代，以及延迟求值。</p>
+<h3 id="外部迭代-vs-内部迭代"><a href="#外部迭代-vs-内部迭代" class="headerlink" title="外部迭代 vs 内部迭代"></a>外部迭代 vs 内部迭代</h3><p>上面所示的代码中，Java8中的Stream API和原来的Collection API的不同在于谁控制了迭代——是迭代器还是使用了迭代器的用户。Stream API的用户只是提供了他们想要使用的操作，然后迭代器将这些操作施加在内部集合中的每一个元素上。当迭代内部集合时，这个过程是由迭代器自己处理的，这被叫做<strong>内部迭代</strong>。而在Collection API中使用<code>for-each</code>结构是一个<strong>外部迭代</strong>的例子。</p>
+<p>有些人可能会争论，在Collection API中我们不需要使用其中的迭代器，因为<code>for-each</code>结构将会处理它，但<code>for-each</code>只是使用了迭代器API的人工迭代的语法糖而已。<code>for-each</code>结构虽然很简单，却有一些缺点——1）他是内在连续的，2）它导致命令式代码，3）它很难并行化。</p>
+<h3 id="延迟计算"><a href="#延迟计算" class="headerlink" title="延迟计算"></a>延迟计算</h3><p>Stream不会进行计算直到一个最终的命令来调用它。在Stream API中的大多数操作返回一个Stream。这些操作不会被执行——它们只是建立起管道流。让我们看一下下面的代码，并预测它的结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line">Stream&lt;Integer&gt; stream = numbers.stream().map(n -&gt; n / <span class="number">0</span>).filter(n -&gt; n % <span class="number">2</span> == <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在上面所示的代码中，我们将一个数字流中的元素除以0。我们也许认为当代码执行时，它会抛出一个<code>ArithmeticException</code>的异常。但是，当你运行该代码时不会有异常抛出。这是因为Stream不会计算直到一个最终的命令调用它。如果在该管道流中添加最终的调用方法，那么该Stream将会执行，并抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line">Stream&lt;Integer&gt; stream = numbers.stream().map(n -&gt; n / <span class="number">0</span>).filter(n -&gt; n % <span class="number">2</span> == <span class="number">0</span>);</span><br><span class="line">stream.collect(toList());</span><br></pre></td></tr></table></figure>
+
+<p>你将会得到类似下面的堆栈信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.ArithmeticException: &#x2F; by zero</span><br><span class="line">	at org._7dayswithx.java8.day2.EagerEvaluationExample.lambda$main$0(EagerEvaluationExample.java:13)</span><br><span class="line">	at org._7dayswithx.java8.day2.EagerEvaluationExample$$Lambda$1&#x2F;1915318863.apply(Unknown Source)</span><br><span class="line">	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193)</span><br><span class="line">	at java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:948)</span><br><span class="line">	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:512)</span><br><span class="line">	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:502)</span><br><span class="line">	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:708)</span><br><span class="line">	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)</span><br><span class="line">	at java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:499)</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Stream-API"><a href="#使用Stream-API" class="headerlink" title="使用Stream API"></a>使用Stream API</h2><p>Stream API提供了很多开发者可以用来从集合中查询数据的操作。Stream操作分为两类——中间操作和结束操作。</p>
+<p><strong>中间操作</strong>是从已有的Stream产生另一个Stream的函数，有<code>filter</code>、<code>map</code>、<code>sorted</code>等。</p>
+<p><strong>结束操作</strong>是从Stream来产生一个不是Stream的结果的函数，有<code>collect(toList())</code>、<code>forEach</code>、<code>count</code>等。</p>
+<p>中间操作允许你来构建管道流，它们会在你调用结束操作时被执行。下面是Stream API部分函数的列表。</p>
+<p><a href="https://whyjava.files.wordpress.com/2015/07/stream-api.png" target="_blank" rel="noopener"><img class="aligncenter size-full wp-image-2983" src="https://whyjava.files.wordpress.com/2015/07/stream-api.png" alt="stream-api" height="450" /></a></p>
+<h3 id="示例域"><a href="#示例域" class="headerlink" title="示例域"></a>示例域</h3><p>在这个教程中，我们将使用任务管理域来解释概念。我们的示例域有一个叫做<code>Task</code>的类——一个由用户来执行的任务。这个类如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.time.LocalDate;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String title;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TaskType type;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LocalDate createdOn;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> done = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">private</span> Set&lt;String&gt; tags = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> LocalDate dueOn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// removed constructor, getter, and setter for brevity</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该例子的数据集如下所示。我们将在Stream API示例中都使用这个列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Task task1 = <span class="keyword">new</span> Task(<span class="string">"Read Version Control with Git book"</span>, TaskType.READING, LocalDate.of(<span class="number">2015</span>, Month.JULY, <span class="number">1</span>)).addTag(<span class="string">"git"</span>).addTag(<span class="string">"reading"</span>).addTag(<span class="string">"books"</span>);</span><br><span class="line"></span><br><span class="line">Task task2 = <span class="keyword">new</span> Task(<span class="string">"Read Java 8 Lambdas book"</span>, TaskType.READING, LocalDate.of(<span class="number">2015</span>, Month.JULY, <span class="number">2</span>)).addTag(<span class="string">"java8"</span>).addTag(<span class="string">"reading"</span>).addTag(<span class="string">"books"</span>);</span><br><span class="line"></span><br><span class="line">Task task3 = <span class="keyword">new</span> Task(<span class="string">"Write a mobile application to store my tasks"</span>, TaskType.CODING, LocalDate.of(<span class="number">2015</span>, Month.JULY, <span class="number">3</span>)).addTag(<span class="string">"coding"</span>).addTag(<span class="string">"mobile"</span>);</span><br><span class="line"></span><br><span class="line">Task task4 = <span class="keyword">new</span> Task(<span class="string">"Write a blog on Java 8 Streams"</span>, TaskType.WRITING, LocalDate.of(<span class="number">2015</span>, Month.JULY, <span class="number">4</span>)).addTag(<span class="string">"blogging"</span>).addTag(<span class="string">"writing"</span>).addTag(<span class="string">"streams"</span>);</span><br><span class="line"></span><br><span class="line">Task task5 = <span class="keyword">new</span> Task(<span class="string">"Read Domain Driven Design book"</span>, TaskType.READING, LocalDate.of(<span class="number">2015</span>, Month.JULY, <span class="number">5</span>)).addTag(<span class="string">"ddd"</span>).addTag(<span class="string">"books"</span>).addTag(<span class="string">"reading"</span>);</span><br><span class="line"></span><br><span class="line">List&lt;Task&gt; tasks = Arrays.asList(task1, task2, task3, task4, task5);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>我们在这一节中不会讨论Java8的日期时间API。现在只要把它当做可读性高的日期相关的API即可。</p>
+</blockquote>
+<h3 id="例子1：找到所有的阅读任务并按照它们的创建日期排序"><a href="#例子1：找到所有的阅读任务并按照它们的创建日期排序" class="headerlink" title="例子1：找到所有的阅读任务并按照它们的创建日期排序"></a>例子1：找到所有的阅读任务并按照它们的创建日期排序</h3><p>我们讨论的第一个例子是找到所有的阅读任务，并按照它们的创建日期进行排序。我们需要执行的操作如下：</p>
+<ol>
+<li>过滤所有的任务来找到任务类型为<code>READING</code>的任务。</li>
+<li>将过滤后的结果按照<code>createdOn</code>域进行排序。</li>
+<li>获得每个任务的标题。</li>
+<li>将结果的标题收集到一个列表中。</li>
+</ol>
+<p>上面的四个操作可以被容易地转换为如下的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">allReadingTasks</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; readingTaskTitles = tasks.stream().</span><br><span class="line">                filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">                sorted((t1, t2) -&gt; t1.getCreatedOn().compareTo(t2.getCreatedOn())).</span><br><span class="line">                map(task -&gt; task.getTitle()).</span><br><span class="line">                collect(Collectors.toList());</span><br><span class="line">        <span class="keyword">return</span> readingTaskTitles;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面展示的代码中，我们使用了Stream API如下的方法：</p>
+<ul>
+<li><strong>filter</strong>：允许你指定一个断言来从数据流中排除一些元素。断言<strong>task-&gt;task.getType() ==TaskType.READING</strong>选择了所有任务类型为<code>READING</code>的任务。</li>
+<li><strong>sorted</strong>：允许你指定一个比较器来对数据流进行排序。在这个例子中，你根据创建的日期来进行排序。lambda表达式<strong>(t1,t2)-&gt;t1.getCreatedOn().compareTo(t2.getCreatedOn())</strong> 提供了<code>Comparator</code>函数式接口的<code>compare</code>方法的实现。</li>
+<li><strong>map</strong>：这需要一个实现了<code>Function&lt;? super T, ? extends R&gt;</code>接口的lambda表达式来将一个数据流转化为另一个数据流。lambda表达式<strong>task-&gt;task.getTitle()</strong>将一个任务转化为一个标题。</li>
+<li><strong>collect(toList())</strong>：这是一个结束操作，它收集结果中的阅读任务的标题并放入列表。</li>
+</ul>
+<p>我们可以像下面一样通过使用<code>Comparator</code>接口的<code>comparing</code>方法和方法引用来优化上面的Java8代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">allReadingTasks</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            sorted(Comparator.comparing(Task::getCreatedOn)).</span><br><span class="line">            map(Task::getTitle).</span><br><span class="line">            collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从Java8开始，接口可以以静态方法和默认方法的形式来拥有方法的实现。这些内容在<a href="./01-default-static-interface-methods.md">第一节</a>中。</p>
+</blockquote>
+<p>在上面展示的代码中，我们用了一个由<code>Comparator</code>接口提供的静态辅助方法<code>comparing</code>，它以<code>Function</code>接口为参数，而<code>Function</code>方法提取一个<code>Comparable</code>的键，并返回一个根据该键进行比较的比较器。方法引用<code>Task::getCreatedOn</code>相当于一个<code>Function&lt;Task, LocalDate&gt;</code>。</p>
+<p>如下所示，通过使用复合函数，我们可以轻易地通过在比较器上调用<code>reversed</code>方法来编写将元素反向排序的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">allReadingTasksSortedByCreatedOnDesc</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            sorted(Comparator.comparing(Task::getCreatedOn).reversed()).</span><br><span class="line">            map(Task::getTitle).</span><br><span class="line">            collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子2：找到唯一的任务"><a href="#例子2：找到唯一的任务" class="headerlink" title="例子2：找到唯一的任务"></a>例子2：找到唯一的任务</h3><p>假设我们的数据集中有重复的任务。如下所示，我们可以在数据流上使用<code>distinct</code>方法来轻易地去除重复元素从而得到唯一的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Task&gt; <span class="title">allDistinctTasks</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().distinct().collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>distinct</code>方法将一个数据流转化成另一个没有重复元素的数据流。它使用对象的<code>equals</code>方法来决定对象是否相等。根据对象<code>equals</code>方法的约定，当两个对象相等的时候，它们被认为是重复的，然后其中一个会从结果数据流中被移除。</p>
+<h3 id="例子3：找到根据创建日期排序的前5名的阅读任务"><a href="#例子3：找到根据创建日期排序的前5名的阅读任务" class="headerlink" title="例子3：找到根据创建日期排序的前5名的阅读任务"></a>例子3：找到根据创建日期排序的前5名的阅读任务</h3><p><code>limit</code>方法可以用来将结果集限定为特定的大小。<code>limit</code>方法是一个逻辑短路操作，也就是说它不会遍历所有的元素来得到结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">topN</span><span class="params">(List&lt;Task&gt; tasks, <span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            sorted(comparing(Task::getCreatedOn)).</span><br><span class="line">            map(Task::getTitle).</span><br><span class="line">            limit(n).</span><br><span class="line">            collect(toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如下所示，你可以将<code>limit</code>方法和<code>skip</code>方法一起使用来创建分页。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// page starts from 0. So to view a second page `page` will be 1 and n will be 5.</span></span><br><span class="line">List&lt;String&gt; readingTaskTitles = tasks.stream().</span><br><span class="line">                filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">                sorted(comparing(Task::getCreatedOn).reversed()).</span><br><span class="line">                map(Task::getTitle).</span><br><span class="line">                skip(page * n).</span><br><span class="line">                limit(n).</span><br><span class="line">                collect(toList());</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子4：计算所有阅读任务的数量"><a href="#例子4：计算所有阅读任务的数量" class="headerlink" title="例子4：计算所有阅读任务的数量"></a>例子4：计算所有阅读任务的数量</h3><p>为了得到所有阅读任务的数量，我们可以在数据流上使用<code>count</code>方法。这个方法是一个结束操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">countAllReadingTasks</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            count();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子5：从所有的任务中找出所有不同的标签"><a href="#例子5：从所有的任务中找出所有不同的标签" class="headerlink" title="例子5：从所有的任务中找出所有不同的标签"></a>例子5：从所有的任务中找出所有不同的标签</h3><p>为了找出所有不同的标签，我们需要进行如下的操作：</p>
+<ol>
+<li>为每一个任务提取标签。</li>
+<li>将所有的标签收集进一个数据流。</li>
+<li>将重复的标签除去。</li>
+<li>最后将收集的结果放入一个列表。</li>
+</ol>
+<p>第一个和第二个操作可以通过在<code>tasks</code>数据流上使用<code>flatMap</code>操作来完成。<code>flatMap</code>操作将每次调用<code>tasks.getTags().stream()</code>产生的数据流合并到一个中。一旦我们将所有标签放入一个数据流中，我们可以仅仅通过<code>distinct</code>方法来获取所有不同的标签。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">allDistinctTags</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tasks.stream().flatMap(task -&gt; task.getTags().stream()).distinct().collect(toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子6：检查是否所有的阅读任务都有books标签"><a href="#例子6：检查是否所有的阅读任务都有books标签" class="headerlink" title="例子6：检查是否所有的阅读任务都有books标签"></a>例子6：检查是否所有的阅读任务都有<code>books</code>标签</h3><p>Stream API提供了方法让用户来检查数据集中元素的某一属性是否符合要求。这些方法是<code>allMatch</code>、<code>anyMatch</code>、<code>findFirst</code>和<code>findAny</code>。为了检查是否所有的阅读任务都一个名叫<code>books</code>的标签，我们可以编写如下的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAllReadingTasksWithTagBooks</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            allMatch(task -&gt; task.getTags().contains(<span class="string">"books"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了检查是否有阅读任务有<code>java8</code>标签，我们可以像下面这样使用<code>anyMatch</code>操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAnyReadingTasksWithTagJava8</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            filter(task -&gt; task.getType() == TaskType.READING).</span><br><span class="line">            anyMatch(task -&gt; task.getTags().contains(<span class="string">"java8"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子7：创建一个所有标题的总结"><a href="#例子7：创建一个所有标题的总结" class="headerlink" title="例子7：创建一个所有标题的总结"></a>例子7：创建一个所有标题的总结</h3><p>假设你想创建一个所有标题的总结。使用<code>reduce</code>操作，它将数据流缩减为一个值。<code>reduce</code>方法以将数据流中元素进行连接的lambda表达式为参数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">joinAllTaskTitles</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().</span><br><span class="line">            map(Task::getTitle).</span><br><span class="line">            reduce((first, second) -&gt; first + <span class="string">" *** "</span> + second).</span><br><span class="line">            get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子8：与原始流一同工作"><a href="#例子8：与原始流一同工作" class="headerlink" title="例子8：与原始流一同工作"></a>例子8：与原始流一同工作</h3><p>除了作用在对象上的通用的数据流，Java8还提供了特殊的数据流来处理原始类型，像int、long和double。让我看一些原始数据流的例子。</p>
+<p>为了创建一个范围的值，我们可以使用<code>range</code>方法，它能创建一个从0开始到9的数据流，它不包括10。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IntStream.range(<span class="number">0</span>, <span class="number">10</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p><code>rangeClosed</code>方法允许你创建包含右边界的数据流。所以下面的数据流将从1开始，到10结束。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IntStream.rangeClosed(<span class="number">1</span>, <span class="number">10</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>你也可以像下面这样通过<code>iterate</code>方法在原始数据流上创建一个无限的数据流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LongStream infiniteStream = LongStream.iterate(<span class="number">1</span>, el -&gt; el + <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>为过滤掉无限数据流中所有的偶数，我们可以编写如下的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">infiniteStream.filter(el -&gt; el % <span class="number">2</span> == <span class="number">0</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>我们可以像下面这样通过使用<code>limit</code>操作来限制结果数据流的数量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">infiniteStream.filter(el -&gt; el % <span class="number">2</span> == <span class="number">0</span>).limit(<span class="number">100</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子9：从Arrays来创建数据流"><a href="#例子9：从Arrays来创建数据流" class="headerlink" title="例子9：从Arrays来创建数据流"></a>例子9：从Arrays来创建数据流</h3><p>如下所示，你可以通过使用<code>Arrays</code>类的静态方法<code>stream</code>来从数组创建数据流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String[] tags = &#123;<span class="string">"java"</span>, <span class="string">"git"</span>, <span class="string">"lambdas"</span>, <span class="string">"machine-learning"</span>&#125;;</span><br><span class="line">Arrays.stream(tags).map(String::toUpperCase).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>你也可像下面这样从一个数组特定的起始下标到结束下标来创建一个数据流。在这里，起始下标被包含在内，而结束下标没有。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(tags, <span class="number">1</span>, <span class="number">3</span>).map(String::toUpperCase).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h2 id="并行数据流"><a href="#并行数据流" class="headerlink" title="并行数据流"></a>并行数据流</h2><p>你使用<code>Stream</code>抽象的一大优势就是这个库能够有效地管理并行，就像迭代器也在容器内部一样。你可以通过调用数据流的<code>parallel</code>方法来使一个数据流并行。<code>parallel</code>方法底层使用了jdk7的<code>fork-join</code> API。默认地，它会将线程数上升到与主机CPU数量相等的数目。在下面所示的代码中，我们将数字按照处理它们的线程来进行分组。你将会在第四章中学习到<code>collect</code>和<code>groupingBy</code>方法。现在只需要理解它们允许你根据一个键来将元素分组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ParallelStreamExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Map&lt;String, List&lt;Integer&gt;&gt; numbersPerThread = IntStream.rangeClosed(<span class="number">1</span>, <span class="number">160</span>)</span><br><span class="line">                .parallel()</span><br><span class="line">                .boxed()</span><br><span class="line">                .collect(groupingBy(i -&gt; Thread.currentThread().getName()));</span><br><span class="line"></span><br><span class="line">        numbersPerThread.forEach((k, v) -&gt; System.out.println(String.format(<span class="string">"%s &gt;&gt; %s"</span>, k, v)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该程序在我电脑上的输出如下所示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ForkJoinPool.commonPool-worker-7 &gt;&gt; [46, 47, 48, 49, 50]</span><br><span class="line">ForkJoinPool.commonPool-worker-1 &gt;&gt; [41, 42, 43, 44, 45, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130]</span><br><span class="line">ForkJoinPool.commonPool-worker-2 &gt;&gt; [146, 147, 148, 149, 150]</span><br><span class="line">main &gt;&gt; [106, 107, 108, 109, 110]</span><br><span class="line">ForkJoinPool.commonPool-worker-5 &gt;&gt; [71, 72, 73, 74, 75]</span><br><span class="line">ForkJoinPool.commonPool-worker-6 &gt;&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]</span><br><span class="line">ForkJoinPool.commonPool-worker-3 &gt;&gt; [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 76, 77, 78, 79, 80]</span><br><span class="line">ForkJoinPool.commonPool-worker-4 &gt;&gt; [91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145]</span><br></pre></td></tr></table></figure>
+
+<p>不是每一个线程处理一样多的元素。你可以通过设置系统属性<code>System.setProperty(&quot;java.util.concurrent.ForkJoinPool.common.parallelism&quot;,
+&quot;2&quot;)</code>来控制<code>fork-join</code>线程池的大小。</p>
+<p>如下所示，另一个你可以使用到<code>parallel</code>操作的地方是你操作一个URL的列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String[] urls = &#123;<span class="string">"https://www.google.co.in/"</span>, <span class="string">"https://twitter.com/"</span>, <span class="string">"http://www.facebook.com/"</span>&#125;;</span><br><span class="line">Arrays.stream(urls).parallel().map(url -&gt; getUrlContent(url)).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>如果你要理解何时来使用并行数据流，我建议你阅读Doug Lea et al的这篇文章 <a href="http://gee.cs.oswego.edu/dl/html/StreamParallelGuidance.html" target="_blank" rel="noopener">http://gee.cs.oswego.edu/dl/html/StreamParallelGuidance.html</a>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/15/java8-lambda/" rel="prev" title="Java8-lambda">
+      <i class="fa fa-chevron-left"></i> Java8-lambda
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/16/Collectors/" rel="next" title="Java8-Collectors">
+      Java8-Collectors <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么我们需要一个新的数据处理抽象"><span class="nav-number">1.</span> <span class="nav-text">为什么我们需要一个新的数据处理抽象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在Java8之前的数据处理"><span class="nav-number">2.</span> <span class="nav-text">在Java8之前的数据处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java8中的数据处理"><span class="nav-number">3.</span> <span class="nav-text">Java8中的数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么Java8编写的代码更好"><span class="nav-number">3.1.</span> <span class="nav-text">为什么Java8编写的代码更好</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Stream？"><span class="nav-number">4.</span> <span class="nav-text">什么是Stream？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collection-vs-Stream"><span class="nav-number">5.</span> <span class="nav-text">Collection vs Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外部迭代-vs-内部迭代"><span class="nav-number">5.1.</span> <span class="nav-text">外部迭代 vs 内部迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟计算"><span class="nav-number">5.2.</span> <span class="nav-text">延迟计算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Stream-API"><span class="nav-number">6.</span> <span class="nav-text">使用Stream API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例域"><span class="nav-number">6.1.</span> <span class="nav-text">示例域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子1：找到所有的阅读任务并按照它们的创建日期排序"><span class="nav-number">6.2.</span> <span class="nav-text">例子1：找到所有的阅读任务并按照它们的创建日期排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子2：找到唯一的任务"><span class="nav-number">6.3.</span> <span class="nav-text">例子2：找到唯一的任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子3：找到根据创建日期排序的前5名的阅读任务"><span class="nav-number">6.4.</span> <span class="nav-text">例子3：找到根据创建日期排序的前5名的阅读任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子4：计算所有阅读任务的数量"><span class="nav-number">6.5.</span> <span class="nav-text">例子4：计算所有阅读任务的数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子5：从所有的任务中找出所有不同的标签"><span class="nav-number">6.6.</span> <span class="nav-text">例子5：从所有的任务中找出所有不同的标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子6：检查是否所有的阅读任务都有books标签"><span class="nav-number">6.7.</span> <span class="nav-text">例子6：检查是否所有的阅读任务都有books标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子7：创建一个所有标题的总结"><span class="nav-number">6.8.</span> <span class="nav-text">例子7：创建一个所有标题的总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子8：与原始流一同工作"><span class="nav-number">6.9.</span> <span class="nav-text">例子8：与原始流一同工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子9：从Arrays来创建数据流"><span class="nav-number">6.10.</span> <span class="nav-text">例子9：从Arrays来创建数据流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行数据流"><span class="nav-number">7.</span> <span class="nav-text">并行数据流</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YSocket</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YSocket</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

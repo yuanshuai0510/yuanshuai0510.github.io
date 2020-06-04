@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ysocks.gitee.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在第二天，你已经学习了Stream API能够让你以声明式的方式帮助你处理集合。我们看到collect是一个将管道流的结果集到一个list中的结束操作。collect是一个将数据流缩减为一个值的归约操作。这个值可以是集合、映射，或者一个值对象。你可以使用collect达到以下目的：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8-Collectors">
+<meta property="og:url" content="http://ysocks.gitee.io/2020/04/16/Collectors/index.html">
+<meta property="og:site_name" content="YSocket&#39;s Blog">
+<meta property="og:description" content="在第二天，你已经学习了Stream API能够让你以声明式的方式帮助你处理集合。我们看到collect是一个将管道流的结果集到一个list中的结束操作。collect是一个将数据流缩减为一个值的归约操作。这个值可以是集合、映射，或者一个值对象。你可以使用collect达到以下目的：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-16T08:43:00.000Z">
+<meta property="article:modified_time" content="2020-06-04T03:48:33.680Z">
+<meta property="article:author" content="YSocket">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://ysocks.gitee.io/2020/04/16/Collectors/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java8-Collectors | YSocket's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="YSocket's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">YSocket's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">YSocket Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/04/16/Collectors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YSocket">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YSocket's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8-Collectors
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-16 16:43:00" itemprop="dateCreated datePublished" datetime="2020-04-16T16:43:00+08:00">2020-04-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-04 11:48:33" itemprop="dateModified" datetime="2020-06-04T11:48:33+08:00">2020-06-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在<a href="./2020/04/15/Stream-API/">第二天</a>，你已经学习了Stream API能够让你以声明式的方式帮助你处理集合。我们看到<code>collect</code>是一个将管道流的结果集到一个<code>list</code>中的结束操作。<code>collect</code>是一个将数据流缩减为一个值的归约操作。这个值可以是集合、映射，或者一个值对象。你可以使用<code>collect</code>达到以下目的：</p>
+<a id="more"></a>
+<ol>
+<li><p><strong>将数据流缩减为一个单一值：</strong>一个流执行后的结果能够被缩减为一个单一的值。单一的值可以是一个<code>Collection</code>，或者像int、double等的数值，再或者是一个用户自定义的值对象。</p>
+</li>
+<li><p><strong>将一个数据流中的元素进行分组：</strong>根据任务类型将流中所有的任务进行分组。这将产生一个<code>Map&lt;TaskType, List&lt;Task&gt;&gt;</code>的结果，其中每个实体包含一个任务类型以及与它相关的任务。你也可以使用除了列表以外的任何其他的集合。如果你不需要与一任务类型相关的所有的任务，你可以选择产生一个<code>Map&lt;TaskType, Task&gt;</code>。这是一个能够根据任务类型对任务进行分类并获取每类任务中第一个任务的例子。</p>
+</li>
+<li><p><strong>分割一个流中的元素：</strong>你可以将一个流分割为两组——比如将任务分割为要做和已经做完的任务。</p>
+</li>
+</ol>
+<h2 id="Collector实际应用"><a href="#Collector实际应用" class="headerlink" title="Collector实际应用"></a>Collector实际应用</h2><p>为了感受到<code>Collector</code>的威力，让我们来看一下我们要根据任务类型来对任务进行分类的例子。在Java8中，我们可以通过编写如下的代码达到将任务根据类型分组的目的。<strong>请参考<a href="./03-streams.md">第二天</a>的博文，也就是我们讨论的在这一系列文章中我们将使用的任务域。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;TaskType, List&lt;Task&gt;&gt; groupTasksByType(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().collect(Collectors.groupingBy(task -&gt; task.getType()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码使用了定义在辅助类<code>Collectors</code>中的<code>groupingBy</code>收集器。它创建了一个映射，其中<code>TaskType</code>是它的键，而包含了所有拥有相同<code>TaskType</code>的任务的列表是它的值。为了在Java7中达到相同的效果，你需要编写如下的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Task&gt; tasks = getTasks();</span><br><span class="line">    Map&lt;TaskType, List&lt;Task&gt;&gt; allTasksByType = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (Task task : tasks) &#123;</span><br><span class="line">        List&lt;Task&gt; existingTasksByType = allTasksByType.get(task.getType());</span><br><span class="line">        <span class="keyword">if</span> (existingTasksByType == <span class="keyword">null</span>) &#123;</span><br><span class="line">            List&lt;Task&gt; tasksByType = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            tasksByType.add(task);</span><br><span class="line">            allTasksByType.put(task.getType(), tasksByType);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            existingTasksByType.add(task);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;TaskType, List&lt;Task&gt;&gt; entry : allTasksByType.entrySet()) &#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"%s =&gt;&gt; %s"</span>, entry.getKey(), entry.getValue()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="收集器：常用的规约操作"><a href="#收集器：常用的规约操作" class="headerlink" title="收集器：常用的规约操作"></a>收集器：常用的规约操作</h2><p><code>Collectors</code>辅助类提供了大量的静态辅助方法来创建收集器为常见的使用场景服务，像将元素收集到一个集合中、分组和分割元素，或者根据不同的标准来概述元素。我们将在这篇博文中涵盖大部分常见的<code>Collector</code>。</p>
+<h2 id="缩减为一个值"><a href="#缩减为一个值" class="headerlink" title="缩减为一个值"></a>缩减为一个值</h2><p>正如上面讨论的，收集器可以被用来收集流的输出到一个集合，或者产生一个单一的值。</p>
+<h3 id="将数据收集进一个列表"><a href="#将数据收集进一个列表" class="headerlink" title="将数据收集进一个列表"></a>将数据收集进一个列表</h3><p>让我们编写我们的第一个测试用例——给定一个任务列表，我们想将他们的标题收集进一个列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.stream.Collectors.toList;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Example2_ReduceValue</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">allTitles</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tasks.stream().map(Task::getTitle).collect(toList());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>toList</code>收集器使用了列表的<code>add</code>方法来向结果列表中添加元素。<code>toList</code>收集器使用了<code>ArrayList</code>作为列表的实现。</p>
+<h3 id="将数据收集进一个集合"><a href="#将数据收集进一个集合" class="headerlink" title="将数据收集进一个集合"></a>将数据收集进一个集合</h3><p>如果我们想要确保返回的标题都是唯一的，并且我们不在乎元素的顺序，那么我们可以使用<code>toSet</code>收集器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.stream.Collectors.toSet;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Set&lt;String&gt; <span class="title">uniqueTitles</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().map(Task::getTitle).collect(toSet());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>toSet</code>方法使用了<code>HashSet</code>作为集合的实现来存储结果集。</p>
+<h3 id="将数据收集进一个映射"><a href="#将数据收集进一个映射" class="headerlink" title="将数据收集进一个映射"></a>将数据收集进一个映射</h3><p>你可以使用<code>toMap</code>收集器将一个流转换为一个映射。<code>toMap</code>收集器需要两个映射方法来获得映射的键和值。在下面展示的代码中，<code>Task::getTitle</code>是接收一个任务并产生一个只包含该任务标题的键的<code>Function</code>。<strong>task -&gt; task</strong>是一个用来返回任务本身的lambda表达式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Task&gt; <span class="title">taskMap</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> tasks.stream().collect(toMap(Task::getTitle, task -&gt; task));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以通过使用<code>Function</code>接口中的默认方法<code>identity</code>来改进上面展示的代码，如下所示，这样可以让代码更加简洁，并更好地传达开发者的意图。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.function.Function.identity;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Task&gt; <span class="title">taskMap</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> tasks.stream().collect(toMap(Task::getTitle, identity()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从一个流中创建映射的代码会在存在重复的键时抛出异常。你将会得到一个类似下面的错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.IllegalStateException: Duplicate key Task&#123;title&#x3D;&#39;Read Version Control with Git book&#39;, type&#x3D;READING&#125;</span><br><span class="line">at java.util.stream.Collectors.lambda$throwingMerger$105(Collectors.java:133)</span><br></pre></td></tr></table></figure>
+
+<p>你可以通过使用<code>toMap</code>方法的另一个变体来处理重复问题，它允许我们指定一个合并方法。这个合并方法允许用户他们指定想如何处理多个值关联到同一个键的冲突。在下面展示的代码中，我们只是使用了新的值，当然你也可以编写一个智能的算法来处理冲突。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Task&gt; <span class="title">taskMap_duplicates</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> tasks.stream().collect(toMap(Task::getTitle, identity(), (t1, t2) -&gt; t2));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你可以通过使用<code>toMap</code>方法的第三个变体来指定其他的映射实现。这需要你指定将用来存储结果的<code>Map</code>和<code>Supplier</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public Map&lt;String, Task&gt; collectToMap(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">    return tasks.stream().collect(toMap(Task::getTitle, identity(), (t1, t2) -&gt; t2, LinkedHashMap::new));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类似于<code>toMap</code>收集器，也有<code>toConcurrentMap</code>收集器，它产生一个<code>ConcurrentMap</code>而不是<code>HashMap</code>。</p>
+<h3 id="使用其它的收集器"><a href="#使用其它的收集器" class="headerlink" title="使用其它的收集器"></a>使用其它的收集器</h3><p>像<code>toList</code>和<code>toSet</code>这类特定的收集器不允许你指定内部的列表或者集合实现。当你想要将结果收集到其它类型的集合中时，你可以像下面这样使用<code>toCollection</code>收集器。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private static LinkedHashSet&lt;Task&gt; collectToLinkedHaskSet(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">  return tasks.stream().collect(toCollection(LinkedHashSet::new));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="找到拥有最长标题的任务"><a href="#找到拥有最长标题的任务" class="headerlink" title="找到拥有最长标题的任务"></a>找到拥有最长标题的任务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Task <span class="title">taskWithLongestTitle</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().collect(collectingAndThen(maxBy((t1, t2) -&gt; t1.getTitle().length() - t2.getTitle().length()), Optional::get));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="统计标签的总数"><a href="#统计标签的总数" class="headerlink" title="统计标签的总数"></a>统计标签的总数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalTagCount</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().collect(summingInt(task -&gt; task.getTags().size()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成任务标题的概述"><a href="#生成任务标题的概述" class="headerlink" title="生成任务标题的概述"></a>生成任务标题的概述</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">titleSummary</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tasks.stream().map(Task::getTitle).collect(joining(<span class="string">";"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="分类收集器"><a href="#分类收集器" class="headerlink" title="分类收集器"></a>分类收集器</h2><p>收集器最常见的使用场景之一是对元素进行分类。让我来看一下不同的例子来理解我们如何进行分类。</p>
+<h3 id="例子1：根据类型对任务分类"><a href="#例子1：根据类型对任务分类" class="headerlink" title="例子1：根据类型对任务分类"></a>例子1：根据类型对任务分类</h3><p>我们看一下下面展示的例子，我们想要根据<code>TaskType</code>来对所有的任务进行分类。我们可以通过使用<code>Collectors</code>辅助类中的<code>groupingBy</code>方法来轻易地进行该项任务。你可以通过使用方法引用和静态导入来使它更加高效。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.util.stream.Collectors.groupingBy;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;TaskType, List&lt;Task&gt;&gt; groupTasksByType(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">       <span class="keyword">return</span> tasks.stream().collect(groupingBy(Task::getType));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它将会产生如下的输出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;CODING&#x3D;[Task&#123;title&#x3D;&#39;Write a mobile application to store my tasks&#39;, type&#x3D;CODING, createdOn&#x3D;2015-07-03&#125;], WRITING&#x3D;[Task&#123;title&#x3D;&#39;Write a blog on Java 8 Streams&#39;, type&#x3D;WRITING, createdOn&#x3D;2015-07-04&#125;], READING&#x3D;[Task&#123;title&#x3D;&#39;Read Version Control with Git book&#39;, type&#x3D;READING, createdOn&#x3D;2015-07-01&#125;, Task&#123;title&#x3D;&#39;Read Java 8 Lambdas book&#39;, type&#x3D;READING, createdOn&#x3D;2015-07-02&#125;, Task&#123;title&#x3D;&#39;Read Domain Driven Design book&#39;, type&#x3D;READING, createdOn&#x3D;2015-07-05&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子2：根据标签分类"><a href="#例子2：根据标签分类" class="headerlink" title="例子2：根据标签分类"></a>例子2：根据标签分类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, List&lt;Task&gt;&gt; groupingByTag(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">        <span class="keyword">return</span> tasks.stream().</span><br><span class="line">                flatMap(task -&gt; task.getTags().stream().map(tag -&gt; <span class="keyword">new</span> TaskTag(tag, task))).</span><br><span class="line">                collect(groupingBy(TaskTag::getTag, mapping(TaskTag::getTask,toList())));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TaskTag</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> String tag;</span><br><span class="line">        <span class="keyword">final</span> Task task;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">TaskTag</span><span class="params">(String tag, Task task)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.tag = tag;</span><br><span class="line">            <span class="keyword">this</span>.task = task;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getTag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> tag;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Task <span class="title">getTask</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> task;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子3：根据标签和数量对任务分类"><a href="#例子3：根据标签和数量对任务分类" class="headerlink" title="例子3：根据标签和数量对任务分类"></a>例子3：根据标签和数量对任务分类</h3><p>将分类器和收集器结合起来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Long&gt; <span class="title">tagsAndCount</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tasks.stream().</span><br><span class="line">        flatMap(task -&gt; task.getTags().stream().map(tag -&gt; <span class="keyword">new</span> TaskTag(tag, task))).</span><br><span class="line">        collect(groupingBy(TaskTag::getTag, counting()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子4：根据任务类型和创建日期分类"><a href="#例子4：根据任务类型和创建日期分类" class="headerlink" title="例子4：根据任务类型和创建日期分类"></a>例子4：根据任务类型和创建日期分类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;TaskType, Map&lt;LocalDate, List&lt;Task&gt;&gt;&gt; groupTasksByTypeAndCreationDate(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">        <span class="keyword">return</span> tasks.stream().collect(groupingBy(Task::getType, groupingBy(Task::getCreatedOn)));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="分割"><a href="#分割" class="headerlink" title="分割"></a>分割</h2><p>很多时候你想根据一个断言来将一个数据集分割成两个数据集。举例来说，我们可以通过定义一个将任务分割为两组的分割方法来将任务分割成两组，一组是在今天之前已经到期的，另一组是其他的任务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Boolean, List&lt;Task&gt;&gt; partitionOldAndFutureTasks(List&lt;Task&gt; tasks) &#123;</span><br><span class="line">  <span class="keyword">return</span> tasks.stream().collect(partitioningBy(task -&gt; task.getDueOn().isAfter(LocalDate.now())));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="生成统计信息"><a href="#生成统计信息" class="headerlink" title="生成统计信息"></a>生成统计信息</h2><p>另一组非常有用的收集器是用来产生统计信息的收集器。这能够在像<code>int</code>、<code>double</code>和<code>long</code>这样的原始数据类型上起到作用；并且能被用来生成像下面这样的统计信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics summaryStatistics = tasks.stream().map(Task::getTitle).collect(summarizingInt(String::length));</span><br><span class="line">System.out.println(summaryStatistics.getAverage()); <span class="comment">//32.4</span></span><br><span class="line">System.out.println(summaryStatistics.getCount()); <span class="comment">//5</span></span><br><span class="line">System.out.println(summaryStatistics.getMax()); <span class="comment">//44</span></span><br><span class="line">System.out.println(summaryStatistics.getMin()); <span class="comment">//24</span></span><br><span class="line">System.out.println(summaryStatistics.getSum()); <span class="comment">//162</span></span><br></pre></td></tr></table></figure>
+
+<p>也有其它的变种形式，像针对其它原生类型的<code>LongSummaryStatistics</code>和<code>DoubleSummaryStatistics</code>。</p>
+<p>你也可以通过使用<code>combine</code>操作来将一个<code>IntSummaryStatistics</code>与另一个组合起来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firstSummaryStatistics.combine(secondSummaryStatistics);</span><br><span class="line">System.out.println(firstSummaryStatistics)</span><br></pre></td></tr></table></figure>
+
+<h2 id="连接所有的标题"><a href="#连接所有的标题" class="headerlink" title="连接所有的标题"></a>连接所有的标题</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">allTitles</span><span class="params">(List&lt;Task&gt; tasks)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> tasks.stream().map(Task::getTitle).collect(joining(<span class="string">", "</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="编写一个定制的收集器"><a href="#编写一个定制的收集器" class="headerlink" title="编写一个定制的收集器"></a>编写一个定制的收集器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.common.collect.HashMultiset;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.Multiset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.EnumSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">import</span> java.util.function.BiConsumer;</span><br><span class="line"><span class="keyword">import</span> java.util.function.BinaryOperator;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Supplier;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collector;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultisetCollector</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Collector</span>&lt;<span class="title">T</span>, <span class="title">Multiset</span>&lt;<span class="title">T</span>&gt;, <span class="title">Multiset</span>&lt;<span class="title">T</span>&gt;&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Supplier&lt;Multiset&lt;T&gt;&gt; supplier() &#123;</span><br><span class="line">        <span class="keyword">return</span> HashMultiset::create;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BiConsumer&lt;Multiset&lt;T&gt;, T&gt; accumulator() &#123;</span><br><span class="line">        <span class="keyword">return</span> (set, e) -&gt; set.add(e, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BinaryOperator&lt;Multiset&lt;T&gt;&gt; combiner() &#123;</span><br><span class="line">        <span class="keyword">return</span> (set1, set2) -&gt; &#123;</span><br><span class="line">            set1.addAll(set2);</span><br><span class="line">            <span class="keyword">return</span> set1;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Function&lt;Multiset&lt;T&gt;, Multiset&lt;T&gt;&gt; finisher() &#123;</span><br><span class="line">        <span class="keyword">return</span> Function.identity();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Set&lt;Characteristics&gt; <span class="title">characteristics</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.unmodifiableSet(EnumSet.of(Characteristics.IDENTITY_FINISH));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.common.collect.Multiset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultisetCollectorExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; names = Arrays.asList(<span class="string">"shekhar"</span>, <span class="string">"rahul"</span>, <span class="string">"shekhar"</span>);</span><br><span class="line">        Multiset&lt;String&gt; set = names.stream().collect(<span class="keyword">new</span> MultisetCollector&lt;&gt;());</span><br><span class="line"></span><br><span class="line">        set.forEach(str -&gt; System.out.println(str + <span class="string">":"</span> + set.count(str)));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Java8中的字数统计"><a href="#Java8中的字数统计" class="headerlink" title="Java8中的字数统计"></a>Java8中的字数统计</h2><p>我们将通过使用流和收集器在Java8中编写有名的字数统计样例来结束这一节。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">wordCount</span><span class="params">(Path path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Map&lt;String, Long&gt; wordCount = Files.lines(path)</span><br><span class="line">            .parallel()</span><br><span class="line">            .flatMap(line -&gt; Arrays.stream(line.trim().split(<span class="string">"\\s"</span>)))</span><br><span class="line">            .map(word -&gt; word.replaceAll(<span class="string">"[^a-zA-Z]"</span>, <span class="string">""</span>).toLowerCase().trim())</span><br><span class="line">            .filter(word -&gt; word.length() &gt; <span class="number">0</span>)</span><br><span class="line">            .map(word -&gt; <span class="keyword">new</span> SimpleEntry&lt;&gt;(word, <span class="number">1</span>))</span><br><span class="line">            .collect(groupingBy(SimpleEntry::getKey, counting()));</span><br><span class="line">    wordCount.forEach((k, v) -&gt; System.out.println(String.format(<span class="string">"%s ==&gt;&gt; %d"</span>, k, v)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/15/Stream-API/" rel="prev" title="Java8-Stream API">
+      <i class="fa fa-chevron-left"></i> Java8-Stream API
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/22/git-stash/" rel="next" title="git-stash 搁置修改">
+      git-stash 搁置修改 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Collector实际应用"><span class="nav-number">1.</span> <span class="nav-text">Collector实际应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#收集器：常用的规约操作"><span class="nav-number">2.</span> <span class="nav-text">收集器：常用的规约操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缩减为一个值"><span class="nav-number">3.</span> <span class="nav-text">缩减为一个值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将数据收集进一个列表"><span class="nav-number">3.1.</span> <span class="nav-text">将数据收集进一个列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将数据收集进一个集合"><span class="nav-number">3.2.</span> <span class="nav-text">将数据收集进一个集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将数据收集进一个映射"><span class="nav-number">3.3.</span> <span class="nav-text">将数据收集进一个映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用其它的收集器"><span class="nav-number">3.4.</span> <span class="nav-text">使用其它的收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#找到拥有最长标题的任务"><span class="nav-number">3.5.</span> <span class="nav-text">找到拥有最长标题的任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统计标签的总数"><span class="nav-number">3.6.</span> <span class="nav-text">统计标签的总数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成任务标题的概述"><span class="nav-number">3.7.</span> <span class="nav-text">生成任务标题的概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类收集器"><span class="nav-number">4.</span> <span class="nav-text">分类收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子1：根据类型对任务分类"><span class="nav-number">4.1.</span> <span class="nav-text">例子1：根据类型对任务分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子2：根据标签分类"><span class="nav-number">4.2.</span> <span class="nav-text">例子2：根据标签分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子3：根据标签和数量对任务分类"><span class="nav-number">4.3.</span> <span class="nav-text">例子3：根据标签和数量对任务分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子4：根据任务类型和创建日期分类"><span class="nav-number">4.4.</span> <span class="nav-text">例子4：根据任务类型和创建日期分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分割"><span class="nav-number">5.</span> <span class="nav-text">分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成统计信息"><span class="nav-number">6.</span> <span class="nav-text">生成统计信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接所有的标题"><span class="nav-number">7.</span> <span class="nav-text">连接所有的标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写一个定制的收集器"><span class="nav-number">8.</span> <span class="nav-text">编写一个定制的收集器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java8中的字数统计"><span class="nav-number">9.</span> <span class="nav-text">Java8中的字数统计</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YSocket</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YSocket</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
