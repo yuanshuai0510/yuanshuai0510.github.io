@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ysocks.gitee.io/"/>
-  <updated>2020-06-04T03:48:33.680Z</updated>
+  <updated>2020-06-20T13:50:01.499Z</updated>
   <id>http://ysocks.gitee.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mac GitBook安装和使用</title>
+    <link href="http://ysocks.gitee.io/2020/06/20/Install-gitbook-on-mac/"/>
+    <id>http://ysocks.gitee.io/2020/06/20/Install-gitbook-on-mac/</id>
+    <published>2020-06-20T13:39:00.000Z</published>
+    <updated>2020-06-20T13:50:01.499Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><ul><li>安装npm</li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br><span class="line"> &#x2F;&#x2F; 检查npm是否安装成功</span><br><span class="line"> npm -v</span><br><span class="line"> &#x2F;&#x2F; 检查node是否存在</span><br><span class="line"> node -v</span><br></pre></td></tr></table></figure><ul><li><p>安装GitBook</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Gitbook是在npm环境下安装的，所以前提得先安装好npm。</span><br><span class="line">&#x2F;&#x2F; 安装Gitbook命令</span><br><span class="line">sudo npm install -g gitbook-cli</span><br><span class="line">&#x2F;&#x2F; 检查是否安装成功</span><br><span class="line">gitbook -v</span><br></pre></td></tr></table></figure></li><li><p>安装Gitbook Editor客户端</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">官网下载地址：https:&#x2F;&#x2F;www.gitbook.com&#x2F;editor</span><br><span class="line">用它辅助写文档很好用，可以登录从GitBook下载Book进行修改提交（我试过直接https进行拉取出错，后来直接云端下载同步到本地才能进行push操作）</span><br><span class="line">不过没有生成静态Html（_book那个文件夹），还需cd 命令进入book所在文件使用gitbook build这条命令进行生成。</span><br><span class="line">不过Gitbook网站里支持阅读和下载。</span><br></pre></td></tr></table></figure></li><li><p>注意事项</p><ul><li>不能使用 npm install gitbook -g 命令安装，因为使用命令gitbook的时候会出现问题。</li><li>安装的命令前需要加入sudo,因为可能会找不到npm的 /usr/local/bin/路径。</li><li>使用gitbook -v命令检查时可能会不出现版本号，但其实是安装好了。</li></ul></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h5 id=&quot;安装&quot;&gt;&lt;a href=&quot;#安装&quot; class=&quot;headerlink&quot; title=&quot;安装&quot;&gt;&lt;/a&gt;安装&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;安装npm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td 
+      
+    
+    </summary>
+    
+    
+      <category term="gitbook" scheme="http://ysocks.gitee.io/categories/gitbook/"/>
+    
+    
+      <category term="gitbook" scheme="http://ysocks.gitee.io/tags/gitbook/"/>
+    
+  </entry>
   
   <entry>
     <title>grep搜索子目录中包含某字符串的特定文件</title>
