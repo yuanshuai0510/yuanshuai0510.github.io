@@ -162,6 +162,73 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/07/07/Mac-zsh-history-show-time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YSocket">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YSocket's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/07/Mac-zsh-history-show-time/" class="post-title-link" itemprop="url">MacOS zsh history命令显示操作时间</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-07-07 13:41:00 / 修改时间：13:43:10" itemprop="dateCreated datePublished" datetime="2020-07-07T13:41:00+08:00">2020-07-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mac/" itemprop="url" rel="index"><span itemprop="name">mac</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -E</span></span><br><span class="line">    1   2.12.2013 14:19  cd ..</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -i</span></span><br><span class="line">    1  2013-12-02 14:19  history -E</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -D</span></span><br><span class="line">    1  0:00  history -E</span><br><span class="line">    2  0:00  history -I</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/06/20/Install-gitbook-on-mac/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -187,7 +254,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-20 21:39:00 / 修改时间：21:50:01" itemprop="dateCreated datePublished" datetime="2020-06-20T21:39:00+08:00">2020-06-20</time>
+              <time title="创建时间：2020-06-20 21:39:00 / 修改时间：21:52:20" itemprop="dateCreated datePublished" datetime="2020-06-20T21:39:00+08:00">2020-06-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -211,10 +278,8 @@
 
       
           <h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><ul>
-<li>安装npm</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br><span class="line"> &#x2F;&#x2F; 检查npm是否安装成功</span><br><span class="line"> npm -v</span><br><span class="line"> &#x2F;&#x2F; 检查node是否存在</span><br><span class="line"> node -v</span><br></pre></td></tr></table></figure>
-<ul>
+<li><p>安装npm</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br><span class="line"> &#x2F;&#x2F; 检查npm是否安装成功</span><br><span class="line"> npm -v</span><br><span class="line"> &#x2F;&#x2F; 检查node是否存在</span><br><span class="line"> node -v</span><br></pre></td></tr></table></figure></li>
 <li><p>安装GitBook</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Gitbook是在npm环境下安装的，所以前提得先安装好npm。</span><br><span class="line">&#x2F;&#x2F; 安装Gitbook命令</span><br><span class="line">sudo npm install -g gitbook-cli</span><br><span class="line">&#x2F;&#x2F; 检查是否安装成功</span><br><span class="line">gitbook -v</span><br></pre></td></tr></table></figure>
 </li>
@@ -845,87 +910,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/04/22/git-stash/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="YSocket">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YSocket's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/22/git-stash/" class="post-title-link" itemprop="url">git-stash 搁置修改</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-22 19:18:00" itemprop="dateCreated datePublished" datetime="2020-04-22T19:18:00+08:00">2020-04-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-04 11:48:33" itemprop="dateModified" datetime="2020-06-04T11:48:33+08:00">2020-06-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>有时候写了一半的JAVA代码，都还不能编译通过的，就被叫去改另一个分支的bug了。  </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/22/git-stash/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -995,14 +979,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
