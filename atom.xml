@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ysocks.gitee.io/"/>
-  <updated>2020-07-07T05:43:10.149Z</updated>
+  <updated>2020-07-28T15:39:13.759Z</updated>
   <id>http://ysocks.gitee.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MacOS brew 安装 consul</title>
+    <link href="http://ysocks.gitee.io/2020/07/28/MacOS-brew-install-consul/"/>
+    <id>http://ysocks.gitee.io/2020/07/28/MacOS-brew-install-consul/</id>
+    <published>2020-07-28T15:34:00.000Z</published>
+    <updated>2020-07-28T15:39:13.759Z</updated>
+    
+    <content type="html"><![CDATA[<p>安装consul</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install consul</span><br></pre></td></tr></table></figure><p>配置consul：<br><code>vim /usr/local/opt/consul/homebrew.mxcl.consul.plist</code></p><p>修改 ProgramArguments 部分：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;string&gt;&#x2F;usr&#x2F;local&#x2F;opt&#x2F;consul&#x2F;bin&#x2F;consul&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;agent&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-server&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-bootstrap&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-advertise&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;127.0.0.1&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-data-dir&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;.&#x2F;data&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-ui&lt;&#x2F;string&gt;</span><br></pre></td></tr></table></figure><p>然后启动服务：<br><code>brew services start consul</code></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;安装consul&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code
+      
+    
+    </summary>
+    
+    
+    
+      <category term="Mac" scheme="http://ysocks.gitee.io/tags/Mac/"/>
+    
+  </entry>
   
   <entry>
     <title>MacOS zsh history命令显示操作时间</title>
