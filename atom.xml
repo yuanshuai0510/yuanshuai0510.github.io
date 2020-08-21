@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ysocks.gitee.io/"/>
-  <updated>2020-07-28T15:39:13.759Z</updated>
+  <updated>2020-08-21T01:08:14.453Z</updated>
   <id>http://ysocks.gitee.io/</id>
   
   <author>
@@ -15,6 +15,53 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>mac查找指定文件类型下包含某个字符串的文件</title>
+    <link href="http://ysocks.gitee.io/2020/08/21/find-file-include-same-string/"/>
+    <id>http://ysocks.gitee.io/2020/08/21/find-file-include-same-string/</id>
+    <published>2020-08-21T01:07:17.000Z</published>
+    <updated>2020-08-21T01:08:14.453Z</updated>
+    
+    <content type="html"><![CDATA[<p>想在整个文件夹下面查找包含字符串 “getAll”并且类型是.js的文件</p><p>终端命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find .&#x2F; -name &quot;*.js&quot; | xargs grep &quot;getAll&quot; -l</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;想在整个文件夹下面查找包含字符串 “getAll”并且类型是.js的文件&lt;/p&gt;
+&lt;p&gt;终端命令：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;lin
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>brew 安装zookeeper 3.4.14</title>
+    <link href="http://ysocks.gitee.io/2020/07/29/brew_install_zookeeper_3_4_14/"/>
+    <id>http://ysocks.gitee.io/2020/07/29/brew_install_zookeeper_3_4_14/</id>
+    <published>2020-07-29T02:15:49.000Z</published>
+    <updated>2020-07-29T02:18:39.512Z</updated>
+    
+    <content type="html"><![CDATA[<p>brew 安装zookeeper 3.4.14</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># force install zookeeper first</span><br><span class="line">brew install https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;Homebrew&#x2F;homebrew-core&#x2F;6d8197bbb5f77e62d51041a3ae552ce2f8ff1344&#x2F;Formula&#x2F;zookeeper.rb</span><br><span class="line"></span><br><span class="line"># then force install kafka compatible with zookeeper 3.4.14</span><br><span class="line">brew install --ignore-dependencies https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;Homebrew&#x2F;homebrew-core&#x2F;6d8197bbb5f77e62d51041a3ae552ce2f8ff1344&#x2F;Formula&#x2F;kafka.rb</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;brew 安装zookeeper 3.4.14&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>MacOS brew 安装 consul</title>
