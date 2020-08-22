@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ysocks.gitee.io/"/>
-  <updated>2020-08-22T12:40:40.944Z</updated>
+  <updated>2020-08-22T12:44:23.166Z</updated>
   <id>http://ysocks.gitee.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/"/>
     <id>http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/</id>
     <published>2020-08-22T12:34:00.000Z</published>
-    <updated>2020-08-22T12:40:40.944Z</updated>
+    <updated>2020-08-22T12:44:23.166Z</updated>
     
-    <content type="html"><![CDATA[<p>来源：<a href="https://www.cnblogs.com/weixinya/p/12893531.html" target="_blank" rel="noopener">https://www.cnblogs.com/weixinya/p/12893531.html</a></p><p>在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。</p><ol><li>模块单独添加国际化配置文件<br>每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个module的模块名作为配置文件的basename，既避免出现重复，又逻辑清晰优雅。</li><li>配置查找国际化资源路径<br>在程序入口所在包下application.yml配置文件中，配置所引用的module中的国际化路径，通过“,”来配置多个module的国际化资源文件。如下所示：<br>application.yml中多module国际化配置：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  messages:</span><br><span class="line">    basename: i18n&#x2F;common,i18n&#x2F;publicRes,i18n&#x2F;roleRight,i18n&#x2F;userMng</span><br><span class="line">    encoding: UTF-8</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+    <content type="html"><![CDATA[<p>来源：<a href="https://www.cnblogs.com/weixinya/p/12893531.html" target="_blank" rel="noopener">https://www.cnblogs.com/weixinya/p/12893531.html</a></p><p>在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。</p><ol><li>模块单独添加国际化配置文件<br>每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个module的模块名作为配置文件的basename，既避免出现重复，又逻辑清晰优雅。</li><li>配置查找国际化资源路径<br>在程序入口所在包下application.yml配置文件中，配置所引用的module中的国际化路径，通过“,”来配置多个module的国际化资源文件。如下所示：<br>application.yml中多module国际化配置：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  messages:</span><br><span class="line">    basename: i18n&#x2F;common,i18n&#x2F;publicRes,i18n&#x2F;roleRight,i18n&#x2F;userMsg</span><br><span class="line">    encoding: UTF-8</span><br></pre></td></tr></table></figure></li></ol>]]></content>
     
     <summary type="html">
     
@@ -34,6 +34,8 @@
     
     </summary>
     
+    
+      <category term="spring boot" scheme="http://ysocks.gitee.io/categories/spring-boot/"/>
     
     
       <category term="spring boot" scheme="http://ysocks.gitee.io/tags/spring-boot/"/>
