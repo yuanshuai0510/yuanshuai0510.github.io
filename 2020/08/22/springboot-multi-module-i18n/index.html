@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"ysocks.gitee.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="写完代码后，我们一般这样git add . &#x2F;&#x2F;添加所有文件git commit -m &quot;本功能全部完成&quot;">
+  <meta name="description" content="来源：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;weixinya&#x2F;p&#x2F;12893531.html 在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。  模块单独添加国际化配置文件每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个m">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git撤销commit 并保存之前的修改">
-<meta property="og:url" content="http://ysocks.gitee.io/2020/05/07/git-revert-commit-keep-modify/index.html">
+<meta property="og:title" content="springboot多模块项目中配置国际化">
+<meta property="og:url" content="http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/index.html">
 <meta property="og:site_name" content="YSocket&#39;s Blog">
-<meta property="og:description" content="写完代码后，我们一般这样git add . &#x2F;&#x2F;添加所有文件git commit -m &quot;本功能全部完成&quot;">
+<meta property="og:description" content="来源：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;weixinya&#x2F;p&#x2F;12893531.html 在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。  模块单独添加国际化配置文件每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个m">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-07T05:31:00.000Z">
-<meta property="article:modified_time" content="2020-06-04T03:48:33.000Z">
+<meta property="article:published_time" content="2020-08-22T12:34:00.000Z">
+<meta property="article:modified_time" content="2020-08-22T12:40:40.944Z">
 <meta property="article:author" content="YSocket">
-<meta property="article:tag" content="git">
+<meta property="article:tag" content="spring boot">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://ysocks.gitee.io/2020/05/07/git-revert-commit-keep-modify/">
+<link rel="canonical" href="http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>git撤销commit 并保存之前的修改 | YSocket's Blog</title>
+  <title>springboot多模块项目中配置国际化 | YSocket's Blog</title>
   
 
 
@@ -168,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/05/07/git-revert-commit-keep-modify/">
+    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -181,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          git撤销commit 并保存之前的修改
+          springboot多模块项目中配置国际化
         </h1>
 
         <div class="post-meta">
@@ -190,24 +190,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-05-07 13:31:00" itemprop="dateCreated datePublished" datetime="2020-05-07T13:31:00+08:00">2020-05-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-04 11:48:33" itemprop="dateModified" datetime="2020-06-04T11:48:33+08:00">2020-06-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
-                </span>
+              <time title="创建时间：2020-08-22 20:34:00 / 修改时间：20:40:40" itemprop="dateCreated datePublished" datetime="2020-08-22T20:34:00+08:00">2020-08-22</time>
             </span>
 
           
@@ -221,28 +206,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>写完代码后，我们一般这样<br><code>git add .</code> //添加所有文件<br><code>git commit -m &quot;本功能全部完成&quot;</code></p>
-<a id="more"></a>
-
-<p>执行完commit后，想撤回commit，怎么办？</p>
-<p>这样凉拌:</p>
-<p><code>git reset --soft HEAD^</code></p>
-<p>这样就成功的撤销了你的commit</p>
-<p>注意，仅仅是撤回commit操作，您写的代码仍然保留。</p>
-<p>说一下个人理解：</p>
-<p>HEAD^的意思是上一个版本，也可以写成HEAD~1</p>
-<p>如果你进行了2次commit，想都撤回，可以使用HEAD~2</p>
-<p>至于这几个参数：</p>
-<p><code>--mixed</code></p>
-<p>意思是：不删除工作空间改动代码，撤销commit，并且撤销git add . 操作<br>这个为默认参数,git reset –mixed HEAD^ 和 git reset HEAD^ 效果是一样的。</p>
-<p><code>--soft</code> </p>
-<p>不删除工作空间改动代码，撤销commit，不撤销git add . </p>
-<p><code>--hard</code></p>
-<p>删除工作空间改动代码，撤销commit，撤销git add .</p>
-<p>注意完成这个操作后，就恢复到了上一次的commit状态。</p>
-<p>顺便说一下，如果commit注释写错了，只是想改一下注释，只需要：</p>
-<p><code>git commit --amend</code></p>
-<p>此时会进入默认vim编辑器，修改注释完毕后保存就好了。</p>
+        <p>来源：<a href="https://www.cnblogs.com/weixinya/p/12893531.html" target="_blank" rel="noopener">https://www.cnblogs.com/weixinya/p/12893531.html</a></p>
+<p>在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。</p>
+<ol>
+<li>模块单独添加国际化配置文件<br>每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个module的模块名作为配置文件的basename，既避免出现重复，又逻辑清晰优雅。</li>
+<li>配置查找国际化资源路径<br>在程序入口所在包下application.yml配置文件中，配置所引用的module中的国际化路径，通过“,”来配置多个module的国际化资源文件。如下所示：<br>application.yml中多module国际化配置：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  messages:</span><br><span class="line">    basename: i18n&#x2F;common,i18n&#x2F;publicRes,i18n&#x2F;roleRight,i18n&#x2F;userMng</span><br><span class="line">    encoding: UTF-8</span><br></pre></td></tr></table></figure></li>
+</ol>
 
     </div>
 
@@ -252,7 +221,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/tags/spring-boot/" rel="tag"># spring boot</a>
           </div>
 
         
@@ -261,13 +230,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/22/git-stash/" rel="prev" title="git-stash 搁置修改">
-      <i class="fa fa-chevron-left"></i> git-stash 搁置修改
+    <a href="/2020/08/21/find-file-include-same-string/" rel="prev" title="mac查找指定文件类型下包含某个字符串的文件">
+      <i class="fa fa-chevron-left"></i> mac查找指定文件类型下包含某个字符串的文件
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/05/07/open-multi-file-in-sublime/" rel="next" title="Mac下设置 sublime Text3 在同一个窗口打开多个文件">
-      Mac下设置 sublime Text3 在同一个窗口打开多个文件 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
