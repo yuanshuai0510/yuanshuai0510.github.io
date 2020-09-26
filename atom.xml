@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ysocks.gitee.io/"/>
-  <updated>2020-08-22T12:44:23.166Z</updated>
+  <updated>2020-09-26T03:30:34.083Z</updated>
   <id>http://ysocks.gitee.io/</id>
   
   <author>
@@ -17,11 +17,35 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Mac 下安装 dnsmasq 来配置开发环境</title>
+    <link href="http://ysocks.gitee.io/2020/09/26/Mac-install-dnsmasq/"/>
+    <id>http://ysocks.gitee.io/2020/09/26/Mac-install-dnsmasq/</id>
+    <published>2020-09-26T03:06:00.000Z</published>
+    <updated>2020-09-26T03:30:34.083Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost / localhost:81 / localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改/etc/hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。  </p><ul><li>安装 dnsmasq  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install dnsmasq </span><br><span class="line">&#96;&#96;&#96; </span><br><span class="line">* 编辑配置文件  </span><br><span class="line">&#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;dnsmasq.conf&#96;  </span><br><span class="line">修改内容:</span><br></pre></td></tr></table></figure>resolv-file=/usr/local/etc/resolv.dnsmasq.conf<br>addn-hosts=/etc/dnsmasq.hosts<br>strict-order<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* 创建文件 &#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;resolv.dnsmasq.conf&#96;  </span><br><span class="line">并添加内容:</span><br></pre></td></tr></table></figure>listen-address=0.0.0.0<br>nameserver 114.114.114.114<br>nameserver 221.228.255.1<br>nameserver 223.5.5.5<br>nameserver 223.6.6.6<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 开发环境配置</span><br><span class="line">&#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;dnsmasq.conf&#96;  </span><br><span class="line">修改内容:</span><br></pre></td></tr></table></figure>#dev-server<br>address=/dev/127.0.0.1 #这样的意思就是访问 <strong>****</strong>.dev 直接引导到 127.0.0.0<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 重启dnsmasq</span><br></pre></td></tr></table></figure>sudo brew services restart dnsmasq<pre><code></code></pre></li></ul><p>最后wifi的dns只要配置一个127.0.0.1即可</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost / localhost:81 / localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改/etc/hos
+      
+    
+    </summary>
+    
+    
+    
+      <category term="dns" scheme="http://ysocks.gitee.io/tags/dns/"/>
+    
+  </entry>
+  
+  <entry>
     <title>springboot多模块项目中配置国际化</title>
     <link href="http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/"/>
     <id>http://ysocks.gitee.io/2020/08/22/springboot-multi-module-i18n/</id>
     <published>2020-08-22T12:34:00.000Z</published>
-    <updated>2020-08-22T12:44:23.166Z</updated>
+    <updated>2020-08-22T12:44:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>来源：<a href="https://www.cnblogs.com/weixinya/p/12893531.html" target="_blank" rel="noopener">https://www.cnblogs.com/weixinya/p/12893531.html</a></p><p>在多个module组成的SpringBoot项目中，可以为每个module单独配置属于自己的国际化资源。</p><ol><li>模块单独添加国际化配置文件<br>每个module单独配置一套配置文件；需要注意的是：配置文件basename不能出现重复，否则会出现配置文件被其他模块的同名配置文件屏蔽的情况！这里建议使用各个module的模块名作为配置文件的basename，既避免出现重复，又逻辑清晰优雅。</li><li>配置查找国际化资源路径<br>在程序入口所在包下application.yml配置文件中，配置所引用的module中的国际化路径，通过“,”来配置多个module的国际化资源文件。如下所示：<br>application.yml中多module国际化配置：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  messages:</span><br><span class="line">    basename: i18n&#x2F;common,i18n&#x2F;publicRes,i18n&#x2F;roleRight,i18n&#x2F;userMsg</span><br><span class="line">    encoding: UTF-8</span><br></pre></td></tr></table></figure></li></ol>]]></content>
     
@@ -47,7 +71,7 @@
     <link href="http://ysocks.gitee.io/2020/08/21/find-file-include-same-string/"/>
     <id>http://ysocks.gitee.io/2020/08/21/find-file-include-same-string/</id>
     <published>2020-08-21T01:07:17.000Z</published>
-    <updated>2020-08-22T12:33:48.483Z</updated>
+    <updated>2020-08-22T12:33:48.000Z</updated>
     
     <content type="html"><![CDATA[<p>想在整个文件夹下面查找包含字符串 “getAll”并且类型是.js的文件</p><p>终端命令：<br><code>find ./ -name &quot;*.js&quot; | xargs grep &quot;getAll&quot; -l</code></p>]]></content>
     
@@ -71,7 +95,7 @@
     <link href="http://ysocks.gitee.io/2020/07/29/brew_install_zookeeper_3_4_14/"/>
     <id>http://ysocks.gitee.io/2020/07/29/brew_install_zookeeper_3_4_14/</id>
     <published>2020-07-29T02:15:49.000Z</published>
-    <updated>2020-07-29T02:18:39.512Z</updated>
+    <updated>2020-07-29T02:18:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>brew 安装zookeeper 3.4.14</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># force install zookeeper first</span><br><span class="line">brew install https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;Homebrew&#x2F;homebrew-core&#x2F;6d8197bbb5f77e62d51041a3ae552ce2f8ff1344&#x2F;Formula&#x2F;zookeeper.rb</span><br><span class="line"></span><br><span class="line"># then force install kafka compatible with zookeeper 3.4.14</span><br><span class="line">brew install --ignore-dependencies https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;Homebrew&#x2F;homebrew-core&#x2F;6d8197bbb5f77e62d51041a3ae552ce2f8ff1344&#x2F;Formula&#x2F;kafka.rb</span><br></pre></td></tr></table></figure>]]></content>
     
@@ -94,7 +118,7 @@
     <link href="http://ysocks.gitee.io/2020/07/28/MacOS-brew-install-consul/"/>
     <id>http://ysocks.gitee.io/2020/07/28/MacOS-brew-install-consul/</id>
     <published>2020-07-28T15:34:00.000Z</published>
-    <updated>2020-07-28T15:39:13.759Z</updated>
+    <updated>2020-07-28T15:39:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>安装consul</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install consul</span><br></pre></td></tr></table></figure><p>配置consul：<br><code>vim /usr/local/opt/consul/homebrew.mxcl.consul.plist</code></p><p>修改 ProgramArguments 部分：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;string&gt;&#x2F;usr&#x2F;local&#x2F;opt&#x2F;consul&#x2F;bin&#x2F;consul&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;agent&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-server&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-bootstrap&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-advertise&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;127.0.0.1&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-data-dir&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;.&#x2F;data&lt;&#x2F;string&gt;</span><br><span class="line">      &lt;string&gt;-ui&lt;&#x2F;string&gt;</span><br></pre></td></tr></table></figure><p>然后启动服务：<br><code>brew services start consul</code></p>]]></content>
     
@@ -119,7 +143,7 @@
     <link href="http://ysocks.gitee.io/2020/07/07/Mac-zsh-history-show-time/"/>
     <id>http://ysocks.gitee.io/2020/07/07/Mac-zsh-history-show-time/</id>
     <published>2020-07-07T05:41:00.000Z</published>
-    <updated>2020-07-07T05:43:10.149Z</updated>
+    <updated>2020-07-07T05:43:10.000Z</updated>
     
     <content type="html"><![CDATA[<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -E</span></span><br><span class="line">    1   2.12.2013 14:19  cd ..</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -i</span></span><br><span class="line">    1  2013-12-02 14:19  history -E</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">history</span> -D</span></span><br><span class="line">    1  0:00  history -E</span><br><span class="line">    2  0:00  history -I</span><br></pre></td></tr></table></figure>]]></content>
     
