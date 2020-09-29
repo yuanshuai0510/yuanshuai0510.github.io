@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 4.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"ysocks.gitee.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost &#x2F; localhost:81 &#x2F; localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改&#x2F;etc&#x2F;hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。    安装 dnsmasq  12345brew i">
+  <meta name="description" content="由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost &#x2F; localhost:81 &#x2F; localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改&#x2F;etc&#x2F;hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。    安装 dnsmasq  1brew insta">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mac 下安装 dnsmasq 来配置开发环境">
 <meta property="og:url" content="http://ysocks.gitee.io/2020/09/26/Mac-install-dnsmasq/index.html">
 <meta property="og:site_name" content="YSocket&#39;s Blog">
-<meta property="og:description" content="由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost &#x2F; localhost:81 &#x2F; localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改&#x2F;etc&#x2F;hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。    安装 dnsmasq  12345brew i">
+<meta property="og:description" content="由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost &#x2F; localhost:81 &#x2F; localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改&#x2F;etc&#x2F;hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。    安装 dnsmasq  1brew insta">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-26T03:06:00.000Z">
-<meta property="article:modified_time" content="2020-09-26T03:30:34.083Z">
+<meta property="article:modified_time" content="2020-09-26T03:56:00.681Z">
 <meta property="article:author" content="YSocket">
 <meta property="article:tag" content="dns">
 <meta name="twitter:card" content="summary">
@@ -192,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-26 11:06:00 / 修改时间：11:30:34" itemprop="dateCreated datePublished" datetime="2020-09-26T11:06:00+08:00">2020-09-26</time>
+              <time title="创建时间：2020-09-26 11:06:00 / 修改时间：11:56:00" itemprop="dateCreated datePublished" datetime="2020-09-26T11:06:00+08:00">2020-09-26</time>
             </span>
 
           
@@ -208,13 +208,27 @@
       
         <p>由于实际的开发当中，可能存在多个项目的情况，如果是在本地自行搭建的坏境的话，就很有可能需要使用多个域名了，当然，也可以是 localhost / localhost:81 / localhost:82 这样来访问多个项目。其实，有更加便捷的方法（忽略自行修改/etc/hosts，这种哈，会改死人的），使用一个管理dns的工具： dnsmasq。  </p>
 <ul>
-<li>安装 dnsmasq  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install dnsmasq </span><br><span class="line">&#96;&#96;&#96; </span><br><span class="line">* 编辑配置文件  </span><br><span class="line">&#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;dnsmasq.conf&#96;  </span><br><span class="line">修改内容:</span><br></pre></td></tr></table></figure>
-resolv-file=/usr/local/etc/resolv.dnsmasq.conf<br>addn-hosts=/etc/dnsmasq.hosts<br>strict-order<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* 创建文件 &#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;resolv.dnsmasq.conf&#96;  </span><br><span class="line">并添加内容:</span><br></pre></td></tr></table></figure>
-listen-address=0.0.0.0<br>nameserver 114.114.114.114<br>nameserver 221.228.255.1<br>nameserver 223.5.5.5<br>nameserver 223.6.6.6<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 开发环境配置</span><br><span class="line">&#96;vi &#x2F;usr&#x2F;local&#x2F;etc&#x2F;dnsmasq.conf&#96;  </span><br><span class="line">修改内容:</span><br></pre></td></tr></table></figure>
-#dev-server<br>address=/dev/127.0.0.1 #这样的意思就是访问 <strong>****</strong>.dev 直接引导到 127.0.0.0<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 重启dnsmasq</span><br></pre></td></tr></table></figure>
-sudo brew services restart dnsmasq<pre><code></code></pre></li>
+<li>安装 dnsmasq  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install dnsmasq</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<a id="more"></a>
+
+<ul>
+<li><p>编辑配置文件<br><code>vi /usr/local/etc/dnsmasq.conf</code> 修改内容: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">resolv-file&#x3D;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;resolv.dnsmasq.conf</span><br><span class="line">addn-hosts&#x3D;&#x2F;etc&#x2F;dnsmasq.hosts</span><br><span class="line">strict-order</span><br></pre></td></tr></table></figure></li>
+<li><p>创建文件 <code>vi /usr/local/etc/resolv.dnsmasq.conf</code>  并添加内容:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">listen-address&#x3D;0.0.0.0</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line">nameserver 221.228.255.1</span><br><span class="line">nameserver 223.5.5.5</span><br><span class="line">nameserver 223.6.6.6</span><br></pre></td></tr></table></figure></li>
+<li><p>开发环境配置<br><code>vi /usr/local/etc/dnsmasq.conf</code><br>修改内容: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#dev-server</span><br><span class="line">address&#x3D;&#x2F;dev&#x2F;127.0.0.1 #这样的意思就是访问 ********.dev 直接引导到 127.0.0.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启dnsmasq<br><code>sudo brew services restart dnsmasq</code></p>
+</li>
 </ul>
 <p>最后wifi的dns只要配置一个127.0.0.1即可</p>
+<ul>
+<li>测试<br><code>ping abc.dev</code></li>
+</ul>
 
     </div>
 
