@@ -162,6 +162,68 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/11/19/sort-lit-by-object-time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YSocket">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YSocket's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/19/sort-lit-by-object-time/" class="post-title-link" itemprop="url">java8 对象集合按时间排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-19 16:23:04 / 修改时间：16:24:35" itemprop="dateCreated datePublished" datetime="2020-11-19T16:23:04+08:00">2020-11-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="java8-对象集合按时间排序"><a href="#java8-对象集合按时间排序" class="headerlink" title="java8 对象集合按时间排序"></a>java8 对象集合按时间排序</h4><p>升序<br><code>coDoctorVOList.sort(Comparator.comparing(CoDoctorVO::getTime));</code></p>
+<p>降序</p>
+<p><code>coDoctorVOList.sort((m1, m2) -&gt; m2.getTime().compareTo(m1.getTime()));</code></p>
+<p>ps:getTime()是对象中获取时间参数的方法</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/11/17/nacos-503-error/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -176,7 +238,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/11/17/nacos-503-error/" class="post-title-link" itemprop="url">nacos 1.4 code:503,msg:server is DOWN now, please try again later! #4210</a>
+            <a href="/2020/11/17/nacos-503-error/" class="post-title-link" itemprop="url">nacos 1.4 code:503,msg:server is DOWN now, please try again later! </a>
         </h2>
 
         <div class="post-meta">
@@ -187,7 +249,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-11-17 18:58:17 / 修改时间：19:01:28" itemprop="dateCreated datePublished" datetime="2020-11-17T18:58:17+08:00">2020-11-17</time>
+              <time title="创建时间：2020-11-17 18:58:17 / 修改时间：19:02:59" itemprop="dateCreated datePublished" datetime="2020-11-17T18:58:17+08:00">2020-11-17</time>
             </span>
 
           
@@ -201,7 +263,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>现象：<br>今天电脑更换了ip 重启nacos出现如下错误:<br><code>1.4.0版本 单机模式下 错误：code:503,msg:server is DOWN now, please try again later!</code><br>原因:<br>1.4.0使用了jraft， jraft会记录前一次启动的集群地址，如果重启机器ip变了的话，会导致jraft记录的地址失效，从而导致选主出问题。</p>
+          <p>现象：<br>今天电脑更换了ip,1.4.0版本 单机模式下 重启nacos出现如下错误:<br><code>错误：code:503,msg:server is DOWN now, please try again later!</code><br>原因:<br>1.4.0使用了jraft， jraft会记录前一次启动的集群地址，如果重启机器ip变了的话，会导致jraft记录的地址失效，从而导致选主出问题。</p>
 <p>解决方式：<br>删除{nacos.home}/nacos/data/protocol文件夹后重新启动。</p>
 
       
@@ -770,66 +832,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ysocks.gitee.io/2020/06/04/grep-string-from-folder/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="YSocket">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YSocket's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/04/grep-string-from-folder/" class="post-title-link" itemprop="url">grep搜索子目录中包含某字符串的特定文件</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-04 10:54:00 / 修改时间：11:48:33" itemprop="dateCreated datePublished" datetime="2020-06-04T10:54:00+08:00">2020-06-04</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><code>grep -n &quot;str&quot; -r ./</code></p>
-<p>这是查找当前目录下以及下辖子目录下所有包含str字符串的文件,会列出文件名.以及该行的内容.以及行号</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -899,7 +901,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
